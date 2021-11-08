@@ -1,0 +1,271 @@
+/******************************************************************************************
+*** Main ***
+******************************************************************************************/
+.mainPage{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+}
+/************************************ Header ******************************************/
+.mainPage .header{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: 100%;
+    background-color: rgba(0,7,14,0.8);
+    z-index: 9999999;
+}
+.mainPage .header .leftMenuIcon{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 50px;
+    width: 100px;
+    cursor: pointer;
+    outline: none;
+}
+.mainPage .header .leftMenuIcon:hover > .menuIcon{
+    fill: rgba(255,255,0,1);
+}
+.mainPage .header .leftMenuIcon .menuIcon{
+    position: absolute;
+    left: 30px;
+    top: 5px;
+    fill: rgba(0,128,255,1);
+    transition: all 0.25s linear;
+}
+.mainPage .header .title{
+    position: absolute;
+    left: 100px;
+    top: 0;
+    height: 50px;
+    width: fit-content;
+    padding: 0 20px;
+    text-align: center;
+    border-left: 1px solid rgba(100,100,100,1);
+    /*border-right: 1px solid rgba(100,100,100,1);*/
+}
+.mainPage .header .title .txt{
+    position: relative;
+    color: rgba(255,255,255,1);
+    font-family: Calibri, sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    top: 5px;
+    cursor: default;
+}
+.mainPage .header .title .txtOne{
+    position: relative;
+    color: rgba(0,51,128,1);
+    font-family: Calibri, sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    top: 5px;
+    cursor: default;
+    margin-left: 10px;
+}
+.mainPage .header .acountDiv{
+    position: absolute;
+    right: 0;
+    top: 0;
+    min-width: 150px;
+    width: fit-content;
+    padding: 0 10px;
+    height: 50px;
+    cursor: pointer;
+    transition: all 0.25s linear;
+    outline: none;
+}
+.mainPage .header .acountDiv:hover{
+    background-color: rgba(0,51,128,0.5);
+}
+.mainPage .header .acountDiv .txt{
+    position: relative;
+    left: 0;
+    font-family: Calibri, sans-serif;
+    font-size: 17px;
+    top: 15px;
+    color: rgba(0,128,255,1);
+    margin-right: 70px;
+    width: auto;
+}
+.mainPage .header .acountDiv .img{
+    position: absolute;
+    right: 20px;
+    top: 5px;
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+}
+.mainPage .header .acountDiv .img .menuIcon{
+    fill: rgba(100,100,100,1);
+}
+/************************************ ProfMenu ******************************************/
+.mainPage .header .acountDiv .profMenu.ng-enter{
+    transition: all 0.25s linear;
+    opacity: 0;
+}
+.mainPage .header .acountDiv .profMenu.ng-enter-active{
+    transition: all 0.25s linear;
+    opacity: 1;
+}
+.mainPage .header .acountDiv .profMenu.ng-leave{
+    transition: all 0.25s linear;
+    opacity: 1;
+}
+.mainPage .header .acountDiv .profMenu.ng-leave-active{
+    transition: all 0.25s linear;
+    opacity: 0;
+}
+.mainPage .header .acountDiv .profMenu{
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: fit-content;
+    background-color: rgba(0,7,14,0.95);
+    top: 100%;
+    padding: 5px 0;
+    transition: all 0.25s linear;
+    opacity: 1;
+    overflow: hidden;
+}
+.mainPage .header .acountDiv .profMenu .selection{
+    position: relative;
+    width: calc(100% - 10px);
+    left: 5px;
+    height: fit-content;
+    margin-top: 2px;
+    transition: all 0.25s linear;
+    text-align: center;
+    outline: none;
+}
+.mainPage .header .acountDiv .profMenu .selection:hover > .txt{
+    color: rgba(255,255,0,0.5);
+}
+.mainPage .header .acountDiv .profMenu .selection .icon{
+    position: relative;
+    margin-left: 5px;
+    margin-right: 5px;
+    fill: rgba(155,155,155,1);
+}
+.mainPage .header .acountDiv .profMenu .selection .txt{
+    position: relative;
+    white-space: nowrap;
+    top: 5px;
+    margin-left: 10px;
+    transition: all 0.25s linear;
+}
+/************************************ Left Menu ******************************************/
+.mainPage .menuLeft.ng-enter{
+    transition: all 0.25s linear;
+    left: -400px;
+}
+.mainPage .menuLeft.ng-enter-active{
+    transition: all 0.25s linear;
+    left: 0;
+}
+.mainPage .menuLeft.ng-leave{
+    transition: all 0.25s linear;
+    left: 0;
+}
+.mainPage .menuLeft.ng-leave-active{
+    transition: all 0.25s linear;
+    left: -400px;
+}
+.mainPage .menuLeft{
+    position: absolute;
+    left: 0;
+    top: 50px;
+    height: calc(100vh - 50px);
+    width: 400px;
+    background-color: rgba(0,7,14,0.9);
+    border-top: 1px solid rgba(100,100,100,0.2);
+    transition: all 0.25s linear;
+    z-index: 9999999;
+}
+.mainPage .menuLeft .leftMenuList{
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+}
+.mainPage .menuLeft .leftMenuList .menuItem{
+    position: relative;
+    left: 10px;
+    width: calc(100% - 20px);
+    border-bottom: 1px solid rgba(100,100,100,0.3);
+    height: 50px;
+    margin-top: 5px;
+    cursor: pointer;
+    border-right: 10px solid rgba(0,51,128,0);
+    transition: all 0.25s linear;
+    outline: none;
+}
+.mainPage .menuLeft .leftMenuList .menuItem:hover{
+    border-right: 10px solid rgba(0,51,128,1);
+}
+.mainPage .menuLeft .leftMenuList .menuItemAct{
+    position: relative;
+    left: 10px;
+    width: calc(100% - 20px);
+    border-bottom: 1px solid rgba(100,100,100,0.3);
+    height: 50px;
+    margin-top: 5px;
+    cursor: pointer;
+    border-right: 10px solid rgba(0,51,128,1);
+    transition: all 0.25s linear;
+    outline: none;
+    background-color: rgba(0,51,128,0.1);
+}
+.mainPage .menuLeft .leftMenuList .menuItem .icon{
+    position: relative;
+    left: 0;
+    top: 8px;
+    fill: rgba(0,51,128,1);
+}
+.mainPage .menuLeft .leftMenuList .menuItem .font{
+    position: relative;
+    width: calc(100% - 40px);
+    margin-left: 10px;
+    text-align: left;
+}
+.mainPage .menuLeft .leftMenuList .menuItem .font .txt{
+    position: relative;
+    top: 12px;
+    font-family: Calibri, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: rgba(255,255,255,0.8);
+}
+/******************************************************************************************
+*** Main Pages ***
+******************************************************************************************/
+.mainPage .mainSubPage.ng-enter{
+    transition: all 0.35s linear;
+    left: -100vw;
+}
+.mainPage .mainSubPage.ng-enter-active{
+    transition: all 0.35s linear;
+    left: 0;
+}
+.mainPage .mainSubPage.ng-leave{
+    transition: all 0.35s linear;
+    left: 0;
+}
+.mainPage .mainSubPage.ng-leave-active{
+    transition: all 0.35s linear;
+    left: 100vw;
+}
+.mainPage .mainSubPage{
+    position: absolute;
+    left: 0;
+    top: 50px;
+    z-index: 9992;
+    width: 100vw;
+    height: calc(100vh - 50px);
+    transition: all 0.35s linear;
+}

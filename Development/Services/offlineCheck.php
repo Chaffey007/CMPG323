@@ -1,0 +1,3 @@
+/*
+    Check by sending http request in intervals and getting response...
+*/

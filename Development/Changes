@@ -1,0 +1,44 @@
+*****   Melkbos Management  *****
+*****         V0.2.2        *****
+
+
+
+***************   Changes   ***************
+
+-   Split CSS files into smaller files. (By selected page)
+-   Deleted unused files from project directory.
+-   Employee page heder.
+-   Styling, data and actions for "Active/Inactive" switch.
+-   Styling, data and actions for "Emp Shop" selector.
+-   Styling, data and actions for "Emp Shop" Drop list.
+-   Added overlay and popup for Emp List Date selector.
+-   Styling, data and actions for "Emp List Date" popup.
+-   Added floating button for "Add New Employee" with tooltip popup.
+-   Added Backround for employee list.
+-   Added tootltips for Employee page header buttons.
+-   Auto-close Emp Shop List.
+-   Auto-close Emp Date Month List.
+-   Auto-close Emp Date Year List.
+-   Fixed error in manageUsers ('get') file.
+-
+
+
+
+
+***************   Notes   ***************
+
+-   Update image in shop list immediately after image upload.
+-   Clear cashe for displayed images.
+-   Create user page
+-   Auto-hide top right drop
+-   Auto-hide left main menu
+-   Settings page
+-   Show/Hide deleted bank entries
+-   Add notes to entries.
+-   Display current online users
+-   Grid Display for users. (Auto adjust rows and columns depending on screen size.)
+-   Auto close all drop menus on mouse leave.
+
+
+-   Auto update server ddns.
+-
