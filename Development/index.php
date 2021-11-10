@@ -26,21 +26,12 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
 </div> <!-- End bodyContent -->
 
     <link rel="stylesheet" href="CSS/misc.css" />
     <link rel="stylesheet" href="CSS/index.css" />
     <link rel="stylesheet" href="CSS/indexMain.css" />
-    <link rel="stylesheet" href="CSS/indexBank.css" />
-    <link rel="stylesheet" href="CSS/indexShop.css" />
-    <link rel="stylesheet" href="CSS/indexEmployee.css" />
+    <link rel="stylesheet" href="CSS/indexOther.css" />
 
 
     <link rel="stylesheet" href="Bower/angular-material/angular-material.min.css" />

@@ -42,8 +42,7 @@ manageBanking
                                 $rootScope.uName = getResponse.data.user;
                                 $rootScope.email = getResponse.data.email;
                                 $rootScope.number = getResponse.data.contactnum;
-                                $rootScope.code = getResponse.data.userCode;
-                                $rootScope.profpic = getResponse.data.profPic;
+                                $rootScope.profreg = getResponse.data.userReg;
                                 $rootScope.logStat = true;
                                 $location.path('/main');
                             }
@@ -113,6 +112,8 @@ manageBanking
 
         /*** Main ***/
         $scope.loginInputOne = "Username";
+        $scope.logReg = 'Login';
+        $scope.logRegTog = "Register";
 
         //... Change mail ...
         var email = '',
@@ -188,9 +189,89 @@ manageBanking
             );
         };
 
+        /***************************** Register ************************************/
+        $scope.register = function() {
+            $rootScope.loading = true;
+
+            var firstname = $rootScope.regFname;
+            var lastname = $rootScope.regLname;
+            var email = $rootScope.regMail;
+            var username = $rootScope.regUsername;
+            var password = $rootScope.regPassword;
+            $http({
+                url: 'Services/serverReg.php',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: 'firstname='+firstname+'&lastname='+lastname+'&email='+email+'&username='+username+'&password='+password
+            }).then(function(response) {
+                    if(response.data.status === 'Success') {
+                        $http({
+                            url: 'Services/serverLogin.php',
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            data: 'username='+username+'&password='+password
+                        }).then(function(responseOne){
+                                if(responseOne.data.status === 'loggedin'){
+                                    $http({
+                                        url: 'Services/credentialsSet.php',
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/x-www-form-urlencoded'
+                                        },
+                                        data: responseOne.data
+                                    }).then(function(responseTwo){
+                                            if(responseTwo.data.status === 'loggedin'){
+                                                $location.path('/main');
+                                            }
+                                        },
+                                        function(e){
+                                            $scope.logErrorMsg = "Failed to login after registration !!! Please try again later.";
+                                            $rootScope.loading = false;
+                                        });
+                                }else{
+                                    $scope.logErrorMsg = "Failed to Login after registration !!! Please try again later.";
+                                    $rootScope.loading = false;
+                                }
+                            },
+                            function(e){
+                                $scope.logErrorMsg = "Failed to Login after registration !!! Please try again later.";
+                                $rootScope.loading = false;
+                            });
+                    }
+                    else if(response.data.status === 'Found'){
+                        $rootScope.loading = false;
+                        $scope.logErrorMsg = "This Username already exists. Please Try again!";
+                    }
+                    else {
+                        $rootScope.loading = false;
+                        $scope.logErrorMsg = "Failed to register !!! Please try again later.";
+                    }
+                },
+                function(){
+                    $scope.logErrorMsg = "Connection Error";
+                    $rootScope.loading = false;
+                }
+            );
+        };
+
         //... Clear Error Messge ...
         $scope.clearError = function(){
             $scope.logErrorMsg = "";
+        };
+
+        //...
+        $scope.logRegSwitch = function(){
+            if($scope.logReg == 'Login'){
+                $scope.logReg = 'Register';
+                $scope.logRegTog = 'Login';
+            }else{
+                $scope.logReg = 'Login';
+                $scope.logRegTog = 'Register';
+            }
         };
 
 
@@ -202,7 +283,7 @@ manageBanking
     myApp.controller('mainController', ['$scope', '$rootScope', '$timeout', '$log', '$http', 'imageUploadService', '$location', 'GlobeVars', 'scrollPageService', function($scope, $rootScope, $timeout, $log, $http, imageUploadService, $location, GlobeVars, scrollPageService){
 
         $scope.showActivePage = 'Home';
-        $rootScope.pageTitle = 'System Management';
+        $rootScope.pageTitle = 'Image Management';
         $rootScope.isMobile = false;
         /******************************** Load Doc *************************************/
         $rootScope.indexReady = false;
@@ -285,8 +366,8 @@ manageBanking
 
         /******************************** Menu Selection *************************************/
         $scope.menuOptionList = [];
-        $scope.menuOptions = ['Home', 'Planning', 'Stock','Banking', 'Accounts', 'Employees', 'Shops'];
-        $scope.menuOptionsIcons = ['home', 'schedule','equalizer','attach_money', 'account_balance', 'group', 'store'];
+        $scope.menuOptions = ['Home', 'My Uploads', 'Shared With Me'];
+        $scope.menuOptionsIcons = ['home', 'schedule','group'];
         for(let a = 0; a < $scope.menuOptions.length; a++){
             $scope.menuOptionList.push({
                 id: a,
@@ -305,13 +386,6 @@ manageBanking
             $rootScope.loading = true;
 
             $timeout(function(){
-                if($scope.showActivePage === 'Banking'){
-                    $scope.bankBookDisp = [];
-                }
-                if(selID === 'Banking'){
-                    ResetTimeFrame();
-                    $scope.showTFrame = false;
-                }
                 $timeout(function(){
                     $scope.showActivePage = selID;
                     $rootScope.loading = false;
@@ -321,804 +395,19 @@ manageBanking
 
 
         /************************************************ User Data *****************************************************/
-        getUserData();
-        $scope.fullUserList = [];
-        function getUserData(){
-            let action = 'get';
-            $http({
-                url: 'Services/manageUsers.php',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                data: 'act='+action+'&date='+$scope.dispCurDate
-            }).then(function(responseOne){
-                //... User List ...
-                if(responseOne.data[0][0].status.includes('Yes')){
-                    for(let a = 0; a < responseOne.data[0].length; a++){
-                        $scope.fullUserList.push({
-                            listID: a,
-                            dbID: responseOne.data[0][a].dbID,
-                            fName: responseOne.data[0][a].fName,
-                            lName: responseOne.data[0][a].lName,
-                            uName: responseOne.data[0][a].uName,
-                            alias: responseOne.data[0][a].alias,
-                            pass: responseOne.data[0][a].pass,
-                            priv: responseOne.data[0][a].priv,
-                            appDate: responseOne.data[0][a].appDate,
-                            mail: responseOne.data[0][a].mail,
-                            num: responseOne.data[0][a].num,
-                            code: responseOne.data[0][a].code,
-                            idNum: responseOne.data[0][a].idNum,
-                            bankAcc: responseOne.data[0][a].bankAcc,
-                            bankBran: responseOne.data[0][a].bankBran,
-                            bankNme: responseOne.data[0][a].bankNme,
-                            profPic: responseOne.data[0][a].profPic,
-                            created: responseOne.data[0][a].created,
-                            edited: responseOne.data[0][a].edited,
-                            editBy: responseOne.data[0][a].editBy
-                        });
-                    }
-                }else{
-                    $scope.fullUserList = [];
-                }
-
-                $rootScope.loading = false;
-            });
-        }
-
-        /************************************************ Banking *****************************************************/
-        $scope.shipDateSel = 'start';
-        $scope.showEntryDetsPop = false;
-        $scope.showBankFilterPop = false;
-        $scope.bankAutosugList = [];
-        let tstBankAutosugList = [];
-        $scope.bankBookFull = [];
-        //... Get data for banking ...
-        $scope.loadBankingData = getBankingData;
-        //getBankingData();
-        function getBankingData(){
-            $scope.bankBookFull = [];
-            $scope.fullUserList = [];
-            $rootScope.loading = true;
-            let action = 'get';
-            $http({
-                url: 'Services/manageBanking.php',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                data: 'act='+action+'&date='+$scope.dispCurDate
-            }).then(function(responseOne){
-                //... Opening Balance ...
-                if(responseOne.data[2][0].status.includes('Yes')){
-                    console.log(responseOne.data[2][0].status);
-                    $scope.openBal = responseOne.data[2][0].val;
-                }else{
-                    console.log(responseOne.data[2][0].status);
-                    $scope.openBal = '0.00';
-                }
-
-                //... User List ...
-                if(responseOne.data[3][0].status.includes('Yes')){
-                    for(let a = 0; a < responseOne.data[3].length; a++){
-                        $scope.fullUserList.push({
-                            listID: a,
-                            dbID: responseOne.data[3][a].dbID,
-                            fName: responseOne.data[3][a].fName,
-                            lName: responseOne.data[3][a].lName,
-                            uName: responseOne.data[3][a].uName,
-                            pass: responseOne.data[3][a].pass,
-                            priv: responseOne.data[3][a].priv,
-                            appDate: responseOne.data[3][a].appDate,
-                            mail: responseOne.data[3][a].mail,
-                            num: responseOne.data[3][a].num,
-                            code: responseOne.data[3][a].code,
-                            idNum: responseOne.data[3][a].idNum,
-                            bankAcc: responseOne.data[3][a].bankAcc,
-                            bankBran: responseOne.data[3][a].bankBran,
-                            bankNme: responseOne.data[3][a].bankNme,
-                            profPic: responseOne.data[3][a].profPic
-                        });
-                    }
-                }else{
-                    $scope.fullUserList = [];
-                }
-
-                //... Full Banking List ...
-                if(responseOne.data[0][0].status.includes('Yes')){
-                    for(let a = 0; a < responseOne.data[0].length; a++){
-                        let tmpUser = '';
-                        for(let b = 0; b < $scope.fullUserList.length; b++){
-                            if(responseOne.data[0][a].user === $scope.fullUserList[b].code){
-                                tmpUser = $scope.fullUserList[b].fName + " " + $scope.fullUserList[b].lName;
-                            }
-                        }
-                        if(responseOne.data[0][a].type !== 'Balance'){
-                            $scope.bankBookFull.push({
-                                listID: a,
-                                dbId: responseOne.data[0][a].dbId,
-                                entryDate: responseOne.data[0][a].entryDate,
-                                type: responseOne.data[0][a].type,
-                                stat: responseOne.data[0][a].stat,
-                                descript: responseOne.data[0][a].descript,
-                                val: responseOne.data[0][a].val,
-                                user: tmpUser, //responseOne.data[0][a].user,
-                                note: responseOne.data[0][a].note,
-                                editDate: responseOne.data[0][a].editDate
-                            });
-                        }
-                    }
-                }
-                bankBookPopulate($scope.dispCurDate);
-                //... Description options ...
-                if(responseOne.data[1][0].status.includes('Yes')){
-                    for(let a = 0; a < responseOne.data[1].length; a++){
-                        let test = 0;
-                        //... Remove double entries ...
-                        for(let b = 0; b < tstBankAutosugList.length; b++){
-                            if(tstBankAutosugList[b].title === responseOne.data[1][a].descript){
-                                test++;
-                            }
-                        }
-                        if(test === 0){
-                            tstBankAutosugList.push({
-                                listID: a,
-                                title: responseOne.data[1][a].descript
-                            });
-                        }
-                    }
-                    //... Sort ...
-                    tstBankAutosugList.sort(SortByTitle);
-
-                    //... Insert Entry ...
-                    bankNewDescriptAutoPopulate('all');
-                }
-                $rootScope.loading = false;
-            });
-        }
-
-        //... Sort alphabetically ...
-        function SortByTitle(x,y) {
-            return ((x.title === y.title) ? 0 : ((x.title > y.title) ? 1 : -1 ));
-        }
-        function SortByDescription(x,y) {
-            return ((x.descript === y.descript) ? 0 : ((x.descript > y.descript) ? 1 : -1 ));
-        }
-        function SortByDate(x,y) {
-            return ((x.entryDate === y.entryDate) ? 0 : ((x.entryDate > y.entryDate) ? 1 : -1 ));
-        }
-        function SortByEntry(x,y) {
-            return ((x.editDate === y.editDate) ? 0 : ((x.editDate > y.editDate) ? 1 : -1 ));
-        }
-        function SortByInEx(){
-            let tmpFullDisp = [];
-            tmpFullDisp = $scope.bankBookDisp;
-            let tmpInDisp = [];
-            let tmpExDisp = [];
-            let tmpInTot = 0.00;
-            let tmpExTot = 0.00;
-            for(let a = 0; a < tmpFullDisp.length; a++){
-                if(tmpFullDisp[a].type === 'income'){
-                    tmpInDisp.push(tmpFullDisp[a]);
-                }else if(tmpFullDisp[a].type === 'expenses'){
-                    tmpExDisp.push(tmpFullDisp[a]);
-                }
-            }
-            for(let a = 0; a < tmpInDisp.length; a++){
-                tmpInTot += parseFloat(tmpInDisp[a].val);
-            }
-            for(let a = 0; a < tmpExDisp.length; a++){
-                tmpExTot += parseFloat(tmpExDisp[a].val);
-            }
-            tmpInTot = tmpInTot.toFixed(2);
-            tmpExTot = tmpExTot.toFixed(2);
-
-            $scope.bankBookDisp = [];
-            let tmpcnt = 0;
-            for(let a = 0; a < tmpInDisp.length; a++){
-                $scope.bankBookDisp.push(tmpInDisp[a]);
-                tmpcnt++;
-            }
-            $scope.bankBookDisp.push({
-                listID: 10000000000,
-                dbId: 'none',
-                entryDate: '',
-                type: 'income',
-                stat: 'Valid',
-                descript: 'Sub Total',
-                val: tmpInTot,
-                user: 'System',
-                note: 'Temporary display for all income transactions of this date.',
-                editDate: ''
-            });
-            for(let a = 0; a < tmpExDisp.length; a++){
-                $scope.bankBookDisp.push(tmpExDisp[a]);
-                tmpcnt++;
-            }
-            $scope.bankBookDisp.push({
-                listID: 10000000001,
-                dbId: 'none',
-                entryDate: '',
-                type: 'expenses',
-                stat: 'Valid',
-                descript: 'Sub Total',
-                val: tmpExTot,
-                user: 'System',
-                note: 'Temporary display for all expense transactions of this date.',
-                editDate: ''
-            });
-        }
-
-        //... Populate Banking Description Autosuggest ...
-        function bankNewDescriptAutoPopulate(txt){
-            $scope.bankAutosugList = [];
-            if(txt === 'all'){
-                for(let a = 0; a < tstBankAutosugList.length; a++){
-                    $scope.bankAutosugList.push(tstBankAutosugList[a]);
-                }
-            }else{
-                //... Compare to entered text (all lowercase) ...
-                for(let a = 0; a < tstBankAutosugList.length; a++){
-                    if(tstBankAutosugList[a].title.toLowerCase().includes(txt.toLowerCase())){
-                        $scope.bankAutosugList.push(tstBankAutosugList[a]);
-                    }
-                }
-            }
-        }
 
 
-
-        //... Show or Hide new entry ...
-        $scope.checkUserPriv = function(currentPriv, reqPriv){
-            return (currentPriv >= reqPriv);
-        };
-
-        $scope.newEntryType = 'income';
-        //... Toggle banking Debit / Credit entry ...
-        $scope.togBankNewEntryType = TogBankNewEntryType;
-        function TogBankNewEntryType(){
-            if($scope.newEntryType === 'income'){
-                $scope.newEntryType = 'expenses'
-            }else{
-                $scope.newEntryType = 'income'
-            }
-        }
-
-        //... Change Description for new entry ...
-        let newBankDescript = '';
-        $scope.changeNewBankDescript = function(txt){
-            newBankDescript = txt;
-            $timeout(function(){
-                bankNewDescriptAutoPopulate(txt);
-            },200);
-        };
-        //... Select Description from list ...
-        $scope.selectNewDescr = function(sel){
-            document.getElementById('bankNewDescript').value = sel;
-            newBankDescript = sel;
-        };
-        //... Change Value for new entry ...
-        let newBankVal = '';
-        $scope.changeNewBankVal = function(txt){
-            newBankVal = txt;
-        };
-
-        //... Add new bank entry ...
-        $scope.addNewBankEntry = AddNewBankEntry;
-        function AddNewBankEntry(){
-            if((newBankDescript !== '') && (newBankVal !== '')){
-                $rootScope.loading = true;
-                let action = 'add';
-
-                //... Calc new Balance ...
-                let tmpCurBalance = 0.00;
-                for(let a = 0; a < $scope.bankBookDisp.length; a++){
-                    if($scope.bankBookDisp[a].type === "income"){
-                        tmpCurBalance += parseFloat($scope.bankBookDisp[a].val);
-                    }else{
-                        tmpCurBalance -= parseFloat($scope.bankBookDisp[a].val);
-                    }
-                }
-                if($scope.newEntryType === 'income'){
-                    tmpCurBalance += parseFloat(newBankVal);
-                }else{
-                    tmpCurBalance -= parseFloat(newBankVal);
-                }
-                tmpCurBalance = parseFloat(tmpCurBalance).toFixed(2);
-
-                //... Add to DB ...
-                newBankVal = parseFloat(newBankVal).toFixed(2);
-                $http({
-                    url: 'Services/manageBanking.php',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    data: 'act='+action+'&descript='+newBankDescript+'&type='+$scope.newEntryType+'&date='+$scope.dispCurDate+'&val='+newBankVal+'&bal='+tmpCurBalance
-                }).then(function(responseOne){
-                    console.log(responseOne.data[0].status);
-                    if(responseOne.data[0].status.includes('Yes')){
-                        newBankDescript = newBankVal = '';
-                        document.getElementById('bankNewDescript').value = "";
-                        document.getElementById('bankNewVal').value = "";
-                        $rootScope.loading = false;
-                        getBankingData();
-                    }
-                });
-            }
-        }
-
-
-        //............. BOOK .............
-        //... Header ...
-        $scope.bankHeaders = [];
-        let bankHeadTitles = ["i","Date","Description","Income","Expenses"];
-        let bankColSize = ["one","two","three","two","two"];
-        for(let a = 0; a < bankHeadTitles.length; a++){
-            $scope.bankHeaders.push({
-                title: bankHeadTitles[a],
-                class: bankColSize[a]
-            });
-        }
-
-        //... Populate Banking Book ...
-        $scope.bankBookDisp = [];
-        $scope.curBankBalance = 0.00;
-        function bankBookPopulate(date){
-            $scope.curBankBalance = 0.00;
-            $scope.bankBookDisp = [];
-            let tmp = 0;
-            for(let a = 0; a < $scope.bankBookFull.length; a++){
-                if(($scope.bankBookFull[a].entryDate.includes(date)) && ($scope.bankBookFull[a].stat === 'Valid') && ($scope.bankBookFull[a].type !== 'Balance')){
-                    $scope.bankBookDisp.push({
-                        listID: tmp,
-                        dbId: $scope.bankBookFull[a].dbId,
-                        entryDate: $scope.bankBookFull[a].entryDate,
-                        type: $scope.bankBookFull[a].type,
-                        stat: $scope.bankBookFull[a].stat,
-                        descript: $scope.bankBookFull[a].descript,
-                        val: $scope.bankBookFull[a].val,
-                        user: $scope.bankBookFull[a].user,
-                        note: $scope.bankBookFull[a].note,
-                        editDate: $scope.bankBookFull[a].editDate
-                    });
-                    tmp++;
-                    if($scope.bankBookFull[a].type === "income"){
-                        $scope.curBankBalance += parseFloat($scope.bankBookFull[a].val);
-                    }else{
-                        $scope.curBankBalance -= parseFloat($scope.bankBookFull[a].val);
-                    }
-                }
-            }
-            $scope.curBankBalance += parseFloat($scope.openBal);
-            $scope.curBankBalance = $scope.curBankBalance.toFixed(2);
-        }
-
-        //... Toggle Banking Sort ...
-        $scope.sortBankingAlpha = sortBankBook;
-        function sortBankBook(){
-            $scope.showBankFilterPop = !$scope.showBankFilterPop;
-
-        }
-        //... Sort by selection ...
-        $scope.bankSortBy = function(sel){
-            $rootScope.loading = true;
-            //... Remove shipment from the list ...
-            for(let r = 0; r < $scope.bankBookDisp.length; r++){
-                if($scope.bankBookDisp[r].descript === 'Sub Total'){
-
-                }
-            }
-            if(sel === 'Date'){
-                $scope.bankBookDisp.sort(SortByDate);
-            }else if(sel === 'Descript'){
-                $scope.bankBookDisp.sort(SortByDescription);
-            }else if(sel === 'Entry'){
-                $scope.bankBookDisp.sort(SortByEntry);
-            }else if(sel === 'InEx'){
-                SortByInEx();
-            }
-            $rootScope.loading = false;
-            $scope.showBankFilterPop = false;
-        };
-
-        //... Toggle Entry Details Popup ...
-        $scope.detsDescr = $scope.detsDate = $scope.detsEdit = $scope.detsType = $scope.detsStat = '';
-        $scope.detsVal = $scope.detsUser = $scope.detsNote = $scope.detsDbId = '';
-        $scope.togEntryDetsPop = function(dbID){
-            $scope.detsDescr = $scope.detsDate = $scope.detsEdit = $scope.detsType = $scope.detsStat = '';
-            $scope.detsVal = $scope.detsUser = $scope.detsNote = '';
-
-            $scope.showEntryDetsPop = !$scope.showEntryDetsPop;
-
-            $scope.detsDbId = $scope.bankBookDisp[dbID].dbId;
-            $scope.detsDescr = $scope.bankBookDisp[dbID].descript;
-            $scope.detsDate = $scope.bankBookDisp[dbID].entryDate;
-            $scope.detsEdit = $scope.bankBookDisp[dbID].editDate;
-            $scope.detsType = $scope.bankBookDisp[dbID].type;
-            $scope.detsStat = $scope.bankBookDisp[dbID].stat;
-            $scope.detsVal = $scope.bankBookDisp[dbID].val;
-            $scope.detsUser = $scope.bankBookDisp[dbID].user;
-            $scope.detsNote = $scope.bankBookDisp[dbID].note;
-        };
-        //... Close Entry Details Popup ...
-        $scope.closeEntryDetsPop = CloseEntryDetsPop;
-        function CloseEntryDetsPop(){
-            $scope.showEntryDetsPop = false;
-        }
-
-        //... Recalculate Current Book and Update balance ...
-        $scope.recalcCurrent = RecalcCurrent;
-        function RecalcCurrent(){
-            $scope.curBankBalance = 0.00;
-            for(let a = 0; a < $scope.bankBookDisp.length; a++){
-                if($scope.bankBookDisp[a].type === "income"){
-                    $scope.curBankBalance += parseFloat($scope.bankBookDisp[a].val);
-                }else{
-                    $scope.curBankBalance -= parseFloat($scope.bankBookDisp[a].val);
-                }
-            }
-            $scope.curBankBalance += parseFloat($scope.openBal);
-            $scope.curBankBalance = $scope.curBankBalance.toFixed(2);
-
-            /************************ **************************/
-            let action = 'balUpdate';
-            $http({
-                url: 'Services/manageBanking.php',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                data: 'act='+action+'&date='+$scope.dispCurDate+'&val='+$scope.curBankBalance
-            }).then(function(responseOne){
-                console.log(responseOne.data[0].status);
-                if(responseOne.data[0].status.includes('Yes')){
-                    newBankDescript = newBankVal = '';
-                    $rootScope.loading = false;
-                    getBankingData();
-                }
-            });
-            /************************ **************************/
-        }
-
-        let preSearchedBook = [];
-        //... Toggle book search bar ...
-        $scope.togBookSearchPop = TogBookSearchPop;
-        function TogBookSearchPop(){
-            $rootScope.loading = true;
-
-            if(!$scope.showBankSearchPop){
-                document.getElementById('bankNewSearch').value = '';
-                $scope.bankNewSearch = '';
-                preSearchedBook = $scope.bankBookDisp;
-                $scope.bankBookDisp = [];
-            } else if($scope.showBankSearchPop){
-                $scope.bankBookDisp = [];
-                $scope.bankBookDisp = preSearchedBook;
-            }
-
-            $scope.showBankSearchPop = !$scope.showBankSearchPop;
-            $rootScope.loading = false;
-        }
-
-        //... Search in current book display ...
-        let counter = 0;
-        $scope.changeNewBankSearch = function(txt){
-            if(counter === 0){
-                $scope.bankBookDisp = [];
-                //... Compare to entered text (all lowercase) ...
-                for(let a = 0; a < preSearchedBook.length; a++){
-                    if(preSearchedBook[a].descript.toLowerCase().includes(txt.toLowerCase())){
-                        $scope.bankBookDisp.push(preSearchedBook[a]);
-                    }
-                    counter++;
-                }
-                counter = 0;
-            }
-        };
-
-        //... Toggle book Export Popup ...
-        $scope.togBankExportPop = TogBankExportPop;
-        function TogBankExportPop(){
-            // Prepare Excel data:
-            $scope.fileName = "Banking_" + $scope.dispCurDate;
-            $scope.exportData = [];
-            // Headers:
-            $scope.exportData.push(["Banking"]);
-            $scope.exportData.push(["Date", "Description", "Income", "Expenses"]);
-            $scope.exportData.push([""]);
-            $scope.exportData.push(["", "Opening Balance", "R " + $scope.openBal, ""]);
-            $scope.exportData.push([""]);
-            // Data:
-            angular.forEach($scope.bankBookDisp, function(value, key){
-                if(value.type === 'income'){
-                    $scope.exportData.push([value.entryDate, value.descript, value.val, ""]);
-                }else if(value.type === 'expenses'){
-                    //let tmpVal = "-" + value.val;
-                    $scope.exportData.push([value.entryDate, value.descript, "", value.val]);
-                }
-            });
-            $scope.exportData.push([""]);
-            $scope.exportData.push(["", "Closing Balance", "R " + $scope.curBankBalance, ""]);
-            $scope.showExportSelection = !$scope.showExportSelection;
-        }
-
-        let focusCnt = 0;
-        //... Auto close bank export popup ...
-        $scope.onFocusBankExportPop = function(sel){
-            if(sel === 'enter'){
-                focusCnt = 0;
-                $scope.showExportSelection = true;
-            }else{
-                focusCnt++;
-                $timeout(function(){
-                    if(focusCnt !== 0){
-                        $scope.showExportSelection = false;
-                    }
-                },500);
-            }
-        };
-
-        let focusCntOne = 0;
-        //... Auto close bank Sort By popup ...
-        $scope.onFocusSortPop = function(sel){
-            if(sel === 'enter'){
-                focusCntOne = 0;
-                $scope.showBankFilterPop = true;
-            }else{
-                focusCntOne++;
-                $timeout(function(){
-                    if(focusCntOne !== 0){
-                        $scope.showBankFilterPop = false;
-                    }
-                },500);
-            }
-        };
-
-        //... Invalidate current bank Entry ...
-        $scope.deleteBankEntry = function(selID){
-            let action = 'invalidate';
-            $http({
-                url: 'Services/manageBanking.php',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                data: 'act='+action+'&id='+selID
-            }).then(function(responseOne){
-                console.log(responseOne.data[0].status);
-                if(responseOne.data[0].status.includes('Yes')){
-                    newBankDescript = newBankVal = '';
-                    $rootScope.loading = false;
-                    $scope.showEntryDetsPop = false;
-                    getBankingData();
-                    $timeout(function(){
-                        RecalcCurrent();
-                    },500);
-                }
-            });
-        };
-
-
-        /************************************************ Datepicker *****************************************************/
-        $scope.togDatePicker = TogDatePicker;
-        function TogDatePicker(){
-            $scope.showTFrame = !$scope.showTFrame;
-            if($scope.showTFrame){
-                $scope.shipDateSel = 'start';
-            }
-        }
-        $scope.closeDatePicker = CloseDatePicker;
-        function CloseDatePicker(){
-            $scope.showTFrame = false;
-        }
-        /** Time Frame **/
-        $scope.shipStartDay = $scope.shipStartDate = $scope.shipEndDay = $scope.shipEndDate = null;
-        //... Initiate dates if saved ...
-
-        //... Select Start Date / End Date ...
-        $scope.shipDateSelChange = function(selID){
-            $scope.shipDateSel = selID;
-        };
-
-        //... Save selected Dates ...
-        $scope.saveShipDates = SaveShipDates;
-        function SaveShipDates(){
-            if($scope.shipStartDay !== null && $scope.shipStartDay !== undefined){
-                if($scope.showBankSearchPop){
-                    TogBookSearchPop();
-                }
-                let tmpDay = $scope.shipStartDay + " " + monthNames[$scope.shipStartDate.getMonth()] + " " + $scope.shipStartDate.getFullYear();
-                let tmpMonth = monthNames[$scope.shipStartDate.getMonth()] + " " + $scope.shipStartDate.getFullYear();
-                if($scope.shipDateSel === 'start'){
-                    $scope.dispCurDate = tmpDay;
-                }else{
-                    $scope.dispCurDate = tmpMonth;
-                }
-                $scope.shipStartDay = $scope.shipStartDate = $scope.shipEndDay = $scope.shipEndDate = null;
-                getBankingData();
-                TogDatePicker();
-            }
-        }
-
-
-        //... Calender ...
-        $scope.shipTimeWeek = [
-            {
-                letter: 'Su'
-            },
-            {
-                letter: 'Mo'
-            },
-            {
-                letter: 'Tu'
-            },
-            {
-                letter: 'We'
-            },
-            {
-                letter: 'Th'
-            },
-            {
-                letter: 'Fr'
-            },
-            {
-                letter: 'Sa'
-            }
-        ];
-
-        LoadNewMonth(selectedDate);
-
-        function LoadNewMonth(dispMonth){
-
-            $scope.weekOne = [];
-            $scope.weekTwo = [];
-            $scope.weekThree = [];
-            $scope.weekFour = [];
-            $scope.weekFive = [];
-            $scope.weekSix = [];
-
-            $timeout(function(){
-                $scope.shipshowDays = true;
-                selectedDate = new Date(dispMonth);
-                month = selectedDate.getMonth();
-                year = selectedDate.getFullYear();
-                let day = selectedDate.getDate();
-
-                let firstDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);    //... First day of display month ...
-                let lastDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1 - 1); //... Last day of disp month ...
-                let testDay = firstDay;                                                                 //... Tester to insert incrementally into array ...
-                let testDayW = (testDay.getDay());                                                  //... Get first day of week ...
-                let weekDayTest = 0;                                                                    //... Start of week (Monday) ...
-                let insDay = 0;
-
-                //alert(firstDay + "\r\n" + (firstDay.getDate()) + "\r\n" + lastDay + "\r\n" + (lastDay.getDate()) + "\r\n" + testDay + "\r\n" + testDayW + "\r\n");
-                for(let i = (firstDay.getDate() - 1); insDay < (lastDay.getDate()); i++){
-                    if(testDayW === weekDayTest){
-                        if(i < 7){
-                            $scope.weekOne.push({name: (insDay + 1)});
-                            insDay++;
-                            weekDayTest++;
-                            testDayW++;
-                        }
-                        if((i >= 7) && (i < 14)){
-                            $scope.weekTwo.push({name: (insDay + 1)});
-                            insDay++;
-                            weekDayTest++;
-                            testDayW++;
-                        }
-                        if((i >= 14) && (i < 21)){
-                            $scope.weekThree.push({name: (insDay + 1)});
-                            insDay++;
-                            weekDayTest++;
-                            testDayW++;
-                        }
-                        if((i >= 21) && (i < 28)){
-                            $scope.weekFour.push({name: (insDay + 1)});
-                            insDay++;
-                            weekDayTest++;
-                            testDayW++;
-                        }
-                        if((i >= 28) && (i < 35)){
-                            $scope.weekFive.push({name: (insDay + 1)});
-                            insDay++;
-                            weekDayTest++;
-                            testDayW++;
-                        }
-                        if((i >= 35) && (i < 42)){
-                            $scope.weekSix.push({name: (insDay + 1)});
-                            insDay++;
-                            weekDayTest++;
-                            testDayW++;
-                        }
-                    }
-                    else{
-                        if(i <= 7){
-                            $scope.weekOne.push({name: null});
-                            weekDayTest++;
-                        }
-                    }
-                }
-            }, 350);
-        }
-
-        //... Previous Month ...
-        $scope.prevMonth = PrevMonth;
-        function PrevMonth(){
-            $scope.shipshowDays = false;
-            if(month === 0){
-                month = 11;
-                year --;
-            }
-            else{
-                month --;
-            }
-            let newMonth = new Date(year, month, 1);
-            LoadNewMonth(newMonth);
-            $timeout(function(){
-                $scope.shipMonthShow = newMonth;
-            }, 350)
-        }
-        //... Next Month ...
-        $scope.nextMonth = NextMonth;
-        function NextMonth(){
-            $scope.shipshowDays = false;
-            if(month === 11){
-                month = 0;
-                year ++;
-            }
-            else{
-                month ++;
-            }
-            let newMonth = new Date(year, month, 1);
-            LoadNewMonth(newMonth);
-            $timeout(function(){
-                $scope.shipMonthShow = newMonth;
-            }, 350)
-        }
-        //... Select Date ...
-        let startDayToCompare;
-        let startDateToCompare;
-        let endDayToCompare;
-        let endDateToCompare;
-        $scope.shipSelectDate = function(selID){
-            $scope.dateError = "";
-            if(selID != null){
-                $scope.shipStartDay = startDayToCompare = selID;
-                $scope.shipStartDate = $scope.shipMonthShow;
-            }
-        };
-        //... Reset Times ...
-        $scope.resetTimeFrame = ResetTimeFrame;
-        function ResetTimeFrame(){
-            if($scope.showBankSearchPop){
-                TogBookSearchPop();
-            }
-            $scope.shipshowDays = false;
-            $scope.shipDateSel = 'start';
-            $scope.dateError = "";
-            $scope.shipStartDay = $scope.shipStartDate = $scope.shipEndDay = $scope.shipEndDate = null;
-            LoadNewMonth(dte);
-            $scope.dispCurDate = $scope.nowDate;
-            $timeout(function(){
-                $scope.shipMonthShow = dte;
-            }, 350);
-            getBankingData();
-            TogDatePicker();
-        }
-
-        /************************************************ Shops *****************************************************/
+        /************************************************ Uploads *****************************************************/
         let shopAct = "get";
-        $scope.fullShopList = [];
+        $scope.fullUplList = [];
         getShopList();
-        //... Get Shop List from DB ...
+        //... Get Upload List from DB ...
         function getShopList(){
-            $scope.dispShopList = [];
+            $scope.dispUplList = [];
             $rootScope.loading = true;
             $timeout(function(){
                 $http({
-                    url: 'Services/manageShops.php',
+                    url: 'Services/manageUploads.php',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -1127,13 +416,13 @@ manageBanking
                 }).then(function(response) {
                         console.log("Get Shop List - " + response.data[0].status);
                         if(response.data[0].status.includes('Yes')){
-                            $scope.fullShopList = [];
+                            $scope.fullUplList = [];
                             for(let a = 0; a < response.data.length; a++){
                                 let tmpImg = null;
                                 if(response.data[a].logo !== null){
                                     tmpImg = "Shop_Pics/"+response.data[a].dbId+".jpg";
                                 }
-                                $scope.fullShopList.push({
+                                $scope.fullUplList.push({
                                     listID: a,
                                     dbId: response.data[a].dbId,
                                     name: response.data[a].name,
@@ -1149,7 +438,7 @@ manageBanking
                                     web: response.data[a].web
                                 });
                             }
-                            $scope.dispShopList = $scope.fullShopList;
+                            $scope.dispUplList = $scope.fullUplList;
                             $rootScope.loading = false;
                         }
                         else {
@@ -1157,7 +446,7 @@ manageBanking
                         }
                     },
                     function(){
-                        console.warn("Connection Error - Get Shop List");
+                        console.warn("Connection Error - Get Upload List");
                         $rootScope.loading = false;
                     }
                 );
@@ -1239,7 +528,7 @@ manageBanking
             if(newShopName.length > 0 && newShopBranch.length > 0){
                 let action = 'add';
                 $http({
-                    url: 'Services/manageShops.php',
+                    url: 'Services/manageUploads.php',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -1267,7 +556,7 @@ manageBanking
         function setSelectedShopItem(index){
             if(index !== ''){
                 actShopSelIndex = index;
-                $scope.activShopListItem = $scope.dispShopList[index];
+                $scope.activShopListItem = $scope.dispUplList[index];
                 $scope.listSelectedItem = 'Shop-' + $scope.activShopListItem.dbId;
                 $scope.dispCurImg = $scope.activShopListItem.logo;
             }
@@ -1278,7 +567,7 @@ manageBanking
             $rootScope.loading = true;
             let action = 'delete';
             $http({
-                url: 'Services/manageShops.php',
+                url: 'Services/manageUploads.php',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -1287,7 +576,7 @@ manageBanking
             }).then(function(responseOne){
                     console.log(responseOne.data[0].status);
                     if(responseOne.data[0].status.includes('Yes')){
-                        //$scope.dispShopList.splice(actShopSelIndex, 1);
+                        //$scope.dispUplList.splice(actShopSelIndex, 1);
                         getShopList();
                         actShopSelIndex = null;
                         $scope.togShopPopup('del', '');
@@ -1301,7 +590,7 @@ manageBanking
             );
         };
 
-        //....................................... Upload shop Image .......................................
+        //....................................... Upload Image .......................................
         $scope.myImage = '';
         $scope.myCroppedImage = '';
         $scope.dispCurImg = '';
@@ -1439,7 +728,7 @@ manageBanking
                 $rootScope.loading = true;
                 let action = 'edit';
                 $http({
-                    url: 'Services/manageShops.php',
+                    url: 'Services/manageUploads.php',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'

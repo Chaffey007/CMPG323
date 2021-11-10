@@ -13,17 +13,19 @@ $SESSION_array = array();
 $date = date("Y-m-d H:i:s");
 $action = $_POST['act'];
 
-//................................................................. Get Shop Data .................................................................
+//................................................................. Get Upload Data .................................................................
 if($action == "get"){
-    $query = "SELECT * FROM `shops`";
+    $curUser = $_SESSION['User_Id'];
+    $query = "SELECT * FROM `uploads` WHERE `user_id` = '$curUser'";
     //....... Get entries by date .........
     $resultGet = $con->query($query);
     if(mysqli_num_rows($resultGet) > 0){
         while($reading = mysqli_fetch_assoc($resultGet)){
-            if($reading['shop_id'] != null){
+            if($reading['upload_id'] != null){
                 $list[] = [
                     'status' => 'Yes',
-                    'dbId' => $reading['shop_id'],
+                    'dbId' => $reading['upload_id'],
+                    'user' => $reading['user_id'],
                     'name' => $reading['shop_name'],
                     'class' => $reading['shop_class'],
                     'colorPrim' => $reading['shop_color_prim'],

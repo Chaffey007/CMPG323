@@ -6,19 +6,10 @@ $response = [];
 
 //... Update user status ...
 $curLogStat = 'Offline';
-$tmpId = $_SESSION['user_emp_code'];
-$queryGetStats = "SELECT * FROM `user_stats` WHERE `user_emp_code`='$tmpId'";
-$resultGetStats = mysqli_query($con, $queryGetStats);
-$readingGetStats = mysqli_fetch_array($resultGetStats);
-if(mysqli_num_rows($resultGetStats) == 1){
-    if($readingGetStats['login_count'] !== NULL){
-        $newCount = (int)$readingGetStats['login_count'];
-    }
-    $newCount += 1;
-    //... Update User Stats ...
-    $queryUpdateStats = "UPDATE `user_stats` SET `current_status` = '$curLogStat' WHERE `user_emp_code` = '$tmpId'";
-    $con->query($queryUpdateStats);
-}
+$tmpId = $_SESSION['User_Id'];
+//... Update User Stats ...
+$queryUpdateStats = "UPDATE `users` SET `user_online` = 0 WHERE `user_id` = '$tmpId'";
+$con->query($queryUpdateStats);
 
 //... Clear vars ...
 $response['status'] = $_SESSION['status'] = "";
@@ -36,8 +27,7 @@ $_SESSION['User_Contact'] = "";
 $_SESSION['User_Username'] = "";
 $_SESSION['User_Password'] = "";
 $_SESSION['userPriv'] = "";
-$_SESSION['profPic'] = "";
-$_SESSION['user_emp_code'] = "";
+$_SESSION['profReg'] = "";
 
 session_destroy();
 

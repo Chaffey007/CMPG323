@@ -12,7 +12,6 @@ if(!isset($_SESSION['status'])){
     $response['status'] = $_SESSION['status'];
     $response['id'] = $_SESSION['id'];
     $response['userid'] = $_SESSION['User_Id'];
-    $response['userCode'] = $_SESSION['user_emp_code'];
     $response['firstname'] = $_SESSION['User_Name'];
     $response['lastname'] = $_SESSION['User_Surname'];
     $response['email'] = $_SESSION['User_Email'];
@@ -20,7 +19,7 @@ if(!isset($_SESSION['status'])){
     $response['user'] = $_SESSION['User_Username'];
     $response['userpas'] = $_SESSION['User_Password'];
     $response['userPriv'] = $_SESSION['userPriv'];
-    $response['profPic'] = $_SESSION['profPic'];
+    $response['userReg'] = $_SESSION['userReg'];
 }
 
 

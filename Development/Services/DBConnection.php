@@ -4,13 +4,7 @@ session_start();
 $DBusername = "root";
 $DBpassword = "35264";
 $DBhostname = "localhost";
-$dbname = "melkbosmanagement";
-/*$username = "root";
-$password = "AvvexoPW40!";
-$hostname = "futureco";
-$dbname = "avvexomain";
-$dbhandle = null;
-$con = null;*/
+$dbname = "cmpg323";
 $_SESSION['dbStatus'] = "";
 
 //..........connection to the database..........
