@@ -26,55 +26,43 @@ if($action == "get"){
                     'status' => 'Yes',
                     'dbId' => $reading['upload_id'],
                     'user' => $reading['user_id'],
-                    'name' => $reading['shop_name'],
-                    'class' => $reading['shop_class'],
-                    'colorPrim' => $reading['shop_color_prim'],
-                    'logo' => $reading['shop_logo'],
-                    'branch' => $reading['shop_branch'],
-                    'tel' => $reading['shop_tel'],
-                    'reg' => $reading['shop_reg_no'],
-                    'comp' => $reading['parent_comp'],
-                    'addr' => $reading['shop_address'],
-                    'mail' => $reading['shop_mail'],
-                    'web' => $reading['shop_www']
+                    'uplDate' => $reading['upload_date'],
+                    'fileType' => $reading['upload_file_type'],
+                    'location' => $reading['upload_geolocation'],
+                    'tags' => $reading['upload_tags'],
+                    'captDate' => $reading['upload_capture_date'],
+                    'captBy' => $reading['upload_capture_by'],
+                    'ttl' => $reading['upload_title'],
+                    'descr' => $reading['uploadDescript'],
+                    'shr' => $reading['upload_is_shared'],
+                    'shrWith' => $reading['upload_shared_with']
                 ];
             }
         }
     }else{
         $list[] = [
-            'status' => 'No - Empty Shop List'
+            'status' => 'No - Empty Uploads List'
         ];
     }
 }
 
-//................................................................. Add New Shop .................................................................
+//................................................................. Add New Upload .................................................................
 if($action == "add"){
     $shopName = mysqli_real_escape_string($con, $_POST['name']);
     $shopBranch = mysqli_real_escape_string($con, $_POST['branch']);
     $shopClass = mysqli_real_escape_string($con, $_POST['class']);
-    //... Get all ...
-    $queryLocate = "SELECT * FROM `shops` WHERE `shop_name` = '$shopName' ";
-    $resultLocate = $con->query($queryLocate);
-    if(mysqli_num_rows($resultLocate) > 0){
-        //... If Shop-Name already exists ...
+    $queryC = "INSERT INTO `uploads` (shop_name, shop_class, shop_branch) ";
+    $queryD = "VALUES ('$shopName', '$shopClass', '$shopBranch')";
+    $queryE = $queryC.$queryD;
+
+    if($con->query($queryE) === TRUE){
         $list[] = [
-            'status' => 'No - This name is already in the shop list.',
+            'status' => 'Yes - Shop Insert Success for ' .$shopName,
         ];
     }else{
-        //... Insert if non existing ...
-        $queryC = "INSERT INTO `shops` (shop_name, shop_class, shop_branch) ";
-        $queryD = "VALUES ('$shopName', '$shopClass', '$shopBranch')";
-        $queryE = $queryC.$queryD;
-
-        if($con->query($queryE) === TRUE){
-            $list[] = [
-                'status' => 'Yes - Shop Insert Success for ' .$shopName,
-            ];
-        }else{
-            $list[] = [
-                'status' => 'No - Shop Insert Failed for ' .$shopName. " => " .mysqli_error($con),
-            ];
-        }
+        $list[] = [
+            'status' => 'No - Shop Insert Failed for ' .$shopName. " => " .mysqli_error($con),
+        ];
     }
 }
 

@@ -7,10 +7,11 @@ $profile = $_POST['prof'];
 if(strpos($profile, 'Shop') !== false){
     //... Directory ...
     define ("FILEREPOSITORY","../");
-    $folder = 'Shop_Pics';
+    $folder = 'Uploads';
     if (! is_dir(FILEREPOSITORY.$folder)) {
         mkdir(FILEREPOSITORY.$folder);
     }
+    print_r("hello");
     $tmpArray = explode('-', $profile);
     $picID = $tmpArray[1];
     $stat = 'yes';

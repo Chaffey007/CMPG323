@@ -399,6 +399,7 @@ manageBanking
 
         /************************************************ Uploads *****************************************************/
         let shopAct = "get";
+        var uplAct = 'add';
         $scope.fullUplList = [];
         getShopList();
         //... Get Upload List from DB ...
@@ -419,23 +420,24 @@ manageBanking
                             $scope.fullUplList = [];
                             for(let a = 0; a < response.data.length; a++){
                                 let tmpImg = null;
-                                if(response.data[a].logo !== null){
-                                    tmpImg = "Shop_Pics/"+response.data[a].dbId+".jpg";
+                                if(response.data[a].dbId !== null){
+                                    tmpImg = "Uploads/"+response.data[a].dbId+response.data[a].fileType;
                                 }
                                 $scope.fullUplList.push({
                                     listID: a,
                                     dbId: response.data[a].dbId,
-                                    name: response.data[a].name,
-                                    class: response.data[a].class,
-                                    colorPrim: response.data[a].colorPrim,
+                                    user: response.data[a].user,
+                                    uplDate: response.data[a].uplDate,
+                                    fileType: response.data[a].fileType,
                                     logo: tmpImg,
-                                    branch: response.data[a].branch,
-                                    tel: response.data[a].tel,
-                                    reg: response.data[a].reg,
-                                    comp: response.data[a].comp,
-                                    addr: response.data[a].addr,
-                                    mail: response.data[a].mail,
-                                    web: response.data[a].web
+                                    location: response.data[a].location,
+                                    tags: response.data[a].tags,
+                                    captDate: response.data[a].captDate,
+                                    captBy: response.data[a].captBy,
+                                    ttl: response.data[a].ttl,
+                                    descr: response.data[a].descr,
+                                    shr: response.data[a].shr,
+                                    shrWith: response.data[a].shrWith
                                 });
                             }
                             $scope.dispUplList = $scope.fullUplList;
@@ -463,26 +465,44 @@ manageBanking
         $scope.listSelectedItem = '';
         $scope.showShopPop = false;
         $scope.togShopPopup = function(popupFunc, index){
+            uplAct = popupFunc;
             $scope.showShopPop = !$scope.showShopPop;
             if(popupFunc === "add"){
-                $scope.showShopAdd = !$scope.showShopAdd;
-            }else if(popupFunc === "edit"){
                 $scope.showImgCrop = false;
                 $scope.shopDetsChanged = false;
+                $scope.uploadDetsTtl = "New Upload";
+                setSelectedShopItem(index);
+                $scope.showShopEdit = !$scope.showShopEdit;
+                if($scope.showShopEdit){
+                    $timeout(function(){
+                        shopEditArray[0] = null;
+                        shopEditArray[1] = $scope.editClass = 0;
+                        shopEditArray[2] = document.getElementById('uplTtl').value = "";
+                        shopEditArray[3] = document.getElementById('uplDesc').value = "";
+                        shopEditArray[4] = document.getElementById('uplTags').value = "";
+                        shopEditArray[5] = document.getElementById('uplGeo').value = "";
+                        shopEditArray[6] = document.getElementById('uplCapDate').value = "";
+                        shopEditArray[7] = document.getElementById('uplCapBy').value = "";
+                        shopEditArray[8] = document.getElementById('uplShareWith').value = "";
+                    },200);
+                }
+            } else if(popupFunc === "edit"){
+                $scope.showImgCrop = false;
+                $scope.shopDetsChanged = false;
+                $scope.uploadDetsTtl = "Edit Details";
                 setSelectedShopItem(index);
                 $scope.showShopEdit = !$scope.showShopEdit;
                 if($scope.showShopEdit){
                     $timeout(function(){
                         shopEditArray[0] = $scope.activShopListItem.dbId;
-                        shopEditArray[1] = $scope.editClass = $scope.activShopListItem.class;
-                        shopEditArray[2] = document.getElementById('shopEditName').value = $scope.activShopListItem.name;
-                        shopEditArray[3] = document.getElementById('shopEditBranch').value = $scope.activShopListItem.branch;
-                        shopEditArray[4] = document.getElementById('shopEditTel').value = $scope.activShopListItem.tel;
-                        shopEditArray[5] = document.getElementById('shopEditAddr').value = $scope.activShopListItem.addr;
-                        shopEditArray[6] = document.getElementById('shopEditMail').value = $scope.activShopListItem.mail;
-                        shopEditArray[7] = document.getElementById('shopEditWeb').value = $scope.activShopListItem.web;
-                        shopEditArray[8] = document.getElementById('shopEditComp').value = $scope.activShopListItem.comp;
-                        shopEditArray[9] = document.getElementById('shopEditReg').value = $scope.activShopListItem.reg;
+                        shopEditArray[1] = $scope.editClass = $scope.activShopListItem.shr;
+                        shopEditArray[2] = document.getElementById('uplTtl').value = $scope.activShopListItem.ttl;
+                        shopEditArray[3] = document.getElementById('uplDesc').value = $scope.activShopListItem.descr;
+                        shopEditArray[4] = document.getElementById('uplTags').value = $scope.activShopListItem.tags;
+                        shopEditArray[5] = document.getElementById('uplGeo').value = $scope.activShopListItem.location;
+                        shopEditArray[6] = document.getElementById('uplCapDate').value = $scope.activShopListItem.captDate;
+                        shopEditArray[7] = document.getElementById('uplCapBy').value = $scope.activShopListItem.captBy;
+                        shopEditArray[8] = document.getElementById('uplShareWith').value = $scope.activShopListItem.shrWith;
                     },200);
                 }
             }else if(popupFunc === "del"){
@@ -500,13 +520,13 @@ manageBanking
                 $scope.selClass = 'prim';
             }
         };
-        //... Toggle Shop Edit class (Prim / Sec) ...
-        $scope.editClass = 'prim';
+        //... Toggle Upload Edit class (Prim / Sec) ...
+        $scope.editClass = 0;
         $scope.togShopEditClass = function(){
-            if($scope.editClass === 'prim'){
-                $scope.editClass = 'sec';
+            if($scope.editClass === 0){
+                $scope.editClass = 1;
             }else{
-                $scope.editClass = 'prim';
+                $scope.editClass = 0;
             }
             shopEditArray[1] = $scope.editClass;
             onShopDetsChange();
@@ -557,8 +577,8 @@ manageBanking
             if(index !== ''){
                 actShopSelIndex = index;
                 $scope.activShopListItem = $scope.dispUplList[index];
-                $scope.listSelectedItem = 'Shop-' + $scope.activShopListItem.dbId;
-                $scope.dispCurImg = $scope.activShopListItem.logo;
+                $scope.listSelectedItem = 'Upl-' + $scope.activShopListItem.dbId;
+                $scope.dispCurImg = $scope.activShopListItem.dbId;
             }
         }
 
@@ -666,57 +686,52 @@ manageBanking
             return bb;
         }
 
-        //....................................... Edit shop details .......................................
+        //....................................... Edit Upload details .......................................
         $scope.shopDetsChanged = false;
-        let shopEditnme = null,
-            shopEditbr = null,
-            shopEdittel = null,
-            shopEditaddr = null,
-            shopEditmail = null,
-            shopEditweb = null,
-            shopEditcomp = null,
-            shopEditreg = null;
+        let uplTtl = null,
+            uplDesc = null,
+            uplTags = null,
+            uplGeo = null,
+            uplCapDate = null,
+            uplCapBy = null,
+            uplShareWith = null;
         let shopEditArray = [null,null,1,null,null,null,null,null,null,null];
 
-        //... Trigger shop details changed ...
+        //... Trigger upload details changed ...
         function onShopDetsChange(){
             $scope.shopDetsChanged = true;
         }
 
-        //... Change Edit shop Details ...
+        //... Change Edit upload Details ...
         $scope.changeEditShopDets = function(id, data){
             switch(id){
-                case 'name':
-                    shopEditnme = data;
+                case 'ttl':
+                    uplTtl = data;
                     shopEditArray[2] = data;
                     break;
-                case 'branch':
-                    shopEditbr = data;
+                case 'descr':
+                    uplDesc = data;
                     shopEditArray[3] = data;
                     break;
-                case 'tel':
-                    shopEdittel = data;
+                case 'tags':
+                    uplTags = data;
                     shopEditArray[4] = data;
                     break;
-                case 'addr':
-                    shopEditaddr = data;
+                case 'geoloc':
+                    uplGeo = data;
                     shopEditArray[5] = data;
                     break;
-                case 'mail':
-                    shopEditmail = data;
+                case 'capDate':
+                    uplCapDate = data;
                     shopEditArray[6] = data;
                     break;
-                case 'web':
-                    shopEditweb = data;
+                case 'capBy':
+                    uplCapBy = data;
                     shopEditArray[7] = data;
                     break;
-                case 'comp':
-                    shopEditcomp = data;
+                case 'shareWith':
+                    uplShareWith = data;
                     shopEditArray[8] = data;
-                    break;
-                case 'reg':
-                    shopEditreg = data;
-                    shopEditArray[9] = data;
                     break;
             }
             onShopDetsChange();
@@ -726,14 +741,13 @@ manageBanking
         $scope.saveEditShop = function(){
             if($scope.shopDetsChanged){
                 $rootScope.loading = true;
-                let action = 'edit';
                 $http({
                     url: 'Services/manageUploads.php',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    data: 'act='+action+'&data='+shopEditArray
+                    data: 'act='+uplAct+'&data='+shopEditArray
                 }).then(function(responseOne){
                         console.log(responseOne.data[0].status);
                         if(responseOne.data[0].status.includes('Yes')){
@@ -750,124 +764,6 @@ manageBanking
                 );
             }
         };
-
-        /************************************************ Employees *****************************************************/
-        //... Select Active/Inactive employees ...
-        $scope.empDispSw = 'Active';
-        $scope.togEmpActInact = function(){
-            if($scope.empDispSw === 'Active'){
-                $scope.empDispSw = 'Inactive';
-            }else{
-                $scope.empDispSw = 'Active';
-            }
-        };
-
-        //... Selected shop ...
-        $scope.empActShop = 'All';
-
-        //... Toggle Shop List ...
-        $scope.showEmpShopList = false;
-        $scope.togEmpShopList = function(){
-            $scope.showEmpShopList = !$scope.showEmpShopList;
-        };
-        //... Close Shop List ...
-        $scope.closeEmpShopList = function(){
-            $scope.showEmpShopList = false;
-        };
-
-        //... Set new Shop to display ...
-        $scope.setDispEmpShop = function(sel){
-            $scope.empActShop = sel;
-
-            //... Call method to load new employee list ...
-
-        };
-
-        //... Set month List ...
-        $scope.months = monthNames;
-        //... Set Year List ...
-        $scope.years = [];
-        for(let a = 2000; a < (year + 10); a++){
-            $scope.years.push(a);
-        }
-
-        //... Display Current Month ...
-        let empCurDate = monthNames[month] + " " + year;
-        $scope.empListMonth = monthNames[month];
-        $scope.empListYear = year;
-        $scope.dispEmpListDate = $scope.empListMonth + " " + $scope.empListYear;
-        empMonthNow();
-        function empMonthNow(){
-            $scope.dispEmpListDate = empCurDate;
-            $scope.dispSelEmpMonth = monthNames[month];
-            $scope.dispSelEmpYear = year;
-
-
-            //... Call method to load initial employee list ...
-
-        }
-
-
-        //... Toggle monthpicker ...
-        let monthPickerFunction = 'List';
-        $scope.showEmpMonthPop = false;
-        $scope.togEmpMonthPicker = function(fn){
-            if($scope.showEmpMonthPop){
-                $scope.showEmpMonthPop = false;
-            }else{
-                monthPickerFunction = fn;
-                $scope.showEmpMonthPop = true;
-            }
-        };
-
-        //... Toggle empMonth drop ...
-        $scope.togEmpMonthDrop = function(){
-            $scope.showEmpMonthDrop = !$scope.showEmpMonthDrop;
-        };
-        //... Close empMonth drop ...
-        $scope.closeEmpMonthDrop = function(){
-            $scope.showEmpMonthDrop = false;
-        };
-        //... Toggle empYear drop ...
-        $scope.togEmpYearDrop = function(){
-            $scope.showEmpYearDrop = !$scope.showEmpYearDrop;
-        };
-        //... Close empYear drop ...
-        $scope.closeEmpYearDrop = function(){
-            $scope.showEmpYearDrop = false;
-        };
-
-        //... Select new month from list ...
-        $scope.setNewEmpMonth = function(sel){
-            if(monthPickerFunction = 'List'){
-                $scope.empListMonth = sel;
-            }
-            $scope.dispSelEmpMonth = sel;
-        };
-        //... Select new year from list ...
-        $scope.setNewEmpYear = function(sel){
-            if(monthPickerFunction = 'List'){
-                $scope.empListYear = sel;
-            }
-            $scope.dispSelEmpYear = sel;
-        };
-
-        //... Set new Emp Month ...
-        $scope.acceptNewEmpMonth = function(){
-            if(monthPickerFunction = 'List'){
-                $scope.dispEmpListDate = $scope.dispSelEmpMonth + " " + $scope.dispSelEmpYear;
-
-                $scope.togEmpMonthPicker('');
-            }
-        };
-
-
-
-
-
-
-
-
 
 
     }]); //End Controller ...

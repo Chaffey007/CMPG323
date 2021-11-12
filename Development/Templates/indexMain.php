@@ -74,7 +74,7 @@
                         </div>
                     </div>
 
-                    <div class="emptyShopList" ng-if="fullUplList.length === 0"><font class="txt">No shops in list</font></div>
+                    <div class="emptyShopList" ng-if="fullUplList.length === 0"><font class="txt">No images uploaded</font></div>
                 </div>
 
                 <div class="addShopBtn" ng-click="togShopPopup('add', '')">
@@ -84,29 +84,6 @@
 
                 <div class="shopPop" ng-show="showShopPop">
                     <div class="fullCont">
-                        <div class="shopAdd" ng-if="showShopAdd" layout="column">
-                            <div class="head" layout="row">
-                                <font class="ttl">Add Shop</font>
-                                <font class="close" ng-click="togShopPopup('add', '')">Close</font>
-                            </div>
-                            <div class="body" layout="column">
-                                <div class="in">
-                                    <input class="shopNewIn" ng-change="changeNewShopName(shopNewName)" ng-model="shopNewName" id="shopNewName" placeholder="Name..." type="text" />
-                                </div>
-                                <div class="in">
-                                    <input class="shopNewIn" ng-change="changeNewShopBranch(shopNewBranch)" ng-model="shopNewBranch" id="shopNewBranch" placeholder="Branch..." type="text" />
-                                </div>
-                                <div class="class" layout="row" ng-click="togShopClass()">
-                                    <font class="one" ng-class="{two: selClass === 'prim'}">Primary</font>
-                                    <div class="switch">
-                                        <div class="bar" ng-class="{barTwo: selClass === 'sec'}"></div>
-                                        <div class="dot" ng-class="{dotTwo: selClass === 'sec'}"></div>
-                                    </div>
-                                    <font class="one" ng-class="{two: selClass === 'sec'}">Secondary</font>
-                                </div>
-                                <button class="addDis" ng-class="{add: (shopNewName.length > 0) && (shopNewBranch.length > 0)}" ng-click="addNewShop()">Add</button>
-                            </div>
-                        </div>
                         <div class="confirmShopDelete" ng-if="showShopDel" layout="column">
                             <div class="head" layout="row">
                                 <ng-md-icon class="icon" icon="warning" size="30"></ng-md-icon>
@@ -123,7 +100,7 @@
                         </div>
                         <div class="shopEdit" ng-if="showShopEdit" layout="column">
                             <div class="head" layout="row">
-                                <font class="ttl">Edit Shop Details</font>
+                                <font class="ttl">{{uploadDetsTtl}}</font>
                                 <font class="close" ng-click="togShopPopup('edit', '')">Close</font>
                             </div>
                             <div class="body" layout="column">
@@ -137,36 +114,33 @@
                                         <ng-md-icon icon="edit" class="editImgIco" size="17"></ng-md-icon>
                                     </div>
                                     <div class="class" layout="row" ng-click="togShopEditClass()">
-                                        <font class="one" ng-class="{two: editClass === 'prim'}">Primary</font>
+                                        <font class="one" ng-class="{two: editClass === 0}">Not Shared</font>
                                         <div class="switch">
-                                            <div class="bar" ng-class="{barTwo: editClass === 'sec'}"></div>
-                                            <div class="dot" ng-class="{dotTwo: editClass === 'sec'}"></div>
+                                            <div class="bar" ng-class="{barTwo: editClass === 1}"></div>
+                                            <div class="dot" ng-class="{dotTwo: editClass === 1}"></div>
                                         </div>
-                                        <font class="one" ng-class="{two: editClass === 'sec'}">Secondary</font>
+                                        <font class="one" ng-class="{two: editClass === 1}">Shared</font>
                                     </div>
                                     <div class="in">
-                                        <input class="shopNewIn" ng-change="changeEditShopDets('name',shopEditName)" ng-model="shopEditName" id="shopEditName" placeholder="Name (Trading As)..." type="text" />
+                                        <input class="shopNewIn" ng-change="changeEditShopDets('ttl',uplTtl)" ng-model="uplTtl" id="uplTtl" placeholder="Title" type="text" />
                                     </div>
                                     <div class="in">
-                                        <input class="shopNewIn" ng-change="changeEditShopDets('branch',shopEditBranch)" ng-model="shopEditBranch" id="shopEditBranch" placeholder="Branch..." type="text" />
+                                        <input class="shopNewIn" ng-change="changeEditShopDets('descr',uplDesc)" ng-model="uplDesc" id="uplDesc" placeholder="Description" type="text" />
                                     </div>
                                     <div class="in">
-                                        <input class="shopNewIn" ng-change="changeEditShopDets('tel',shopEditTel)" ng-model="shopEditTel" id="shopEditTel" placeholder="Tel..." type="text" />
+                                        <input class="shopNewIn" ng-change="changeEditShopDets('tags',uplTags)" ng-model="uplTags" id="uplTags" placeholder="Tags" type="text" />
                                     </div>
                                     <div class="in">
-                                        <input class="shopNewIn" ng-change="changeEditShopDets('addr',shopEditAddr)" ng-model="shopEditAddr" id="shopEditAddr" placeholder="Address..." type="text" />
+                                        <input class="shopNewIn" ng-change="changeEditShopDets('geoloc',uplGeo)" ng-model="uplGeo" id="uplGeo" placeholder="Geolocation" type="text" />
                                     </div>
                                     <div class="in">
-                                        <input class="shopNewIn" ng-change="changeEditShopDets('mail',shopEditMail)" ng-model="shopEditMail" id="shopEditMail" placeholder="Email..." type="email" />
+                                        <input class="shopNewIn" ng-change="changeEditShopDets('capDate',uplCapDate)" ng-model="uplCapDate" id="uplCapDate" placeholder="Capture Date" type="email" />
                                     </div>
                                     <div class="in">
-                                        <input class="shopNewIn" ng-change="changeEditShopDets('web',shopEditWeb)" ng-model="shopEditWeb" id="shopEditWeb" placeholder="Website..." type="text" />
+                                        <input class="shopNewIn" ng-change="changeEditShopDets('capBy',uplCapBy)" ng-model="uplCapBy" id="uplCapBy" placeholder="Captured By" type="text" />
                                     </div>
                                     <div class="in">
-                                        <input class="shopNewIn" ng-change="changeEditShopDets('comp',shopEditComp)" ng-model="shopEditComp" id="shopEditComp" placeholder="Registered Company..." type="text" />
-                                    </div>
-                                    <div class="in">
-                                        <input class="shopNewIn" ng-change="changeEditShopDets('reg',shopEditReg)" ng-model="shopEditReg" id="shopEditReg" placeholder="Reg. No..." type="text" />
+                                        <input class="shopNewIn" ng-change="changeEditShopDets('shareWith',uplShareWith)" ng-model="uplShareWith" id="uplShareWith" placeholder="Shared With" type="text" />
                                     </div>
 
                                 </div>
