@@ -2,16 +2,17 @@
 require_once 'DBConnection.php';
 
 $profile = $_POST['prof'];
+$userid = $_SESSION['User_Id'];
+$date = date("Y-m-d H:i:s");
 
 //... If Shop Image ...
-if(strpos($profile, 'Shop') !== false){
+if(strpos($profile, 'Upl') !== false){
     //... Directory ...
     define ("FILEREPOSITORY","../");
     $folder = 'Uploads';
-    if (! is_dir(FILEREPOSITORY.$folder)) {
+    if (!is_dir(FILEREPOSITORY.$folder)) {
         mkdir(FILEREPOSITORY.$folder);
     }
-    print_r("hello");
     $tmpArray = explode('-', $profile);
     $picID = $tmpArray[1];
     $stat = 'yes';
@@ -19,12 +20,23 @@ if(strpos($profile, 'Shop') !== false){
     //... Upload File ...
     if(count($_FILES) > 0){
         if(is_uploaded_file($_FILES['file']['tmp_name'])){
-            $result = move_uploaded_file($_FILES['file']['tmp_name'], FILEREPOSITORY.$folder."/"."$picID.jpg");
+
+            $query = "SELECT * FROM `uploads` WHERE `user_id` = '$userid'";
+            $resultGet = $con->query($query);
+            $uplCount = mysqli_num_rows($resultGet);
+            $uplCount++;
+            $tmpFilename = $userid."_".$uplCount.".jpg";
+
+            $result = move_uploaded_file($_FILES['file']['tmp_name'], FILEREPOSITORY.$folder."/".$tmpFilename);
             if ($result == 1){
-                $query = "UPDATE `shops` SET `shop_logo` = '$stat' WHERE `shop_id` = '$picID'";
-                if ($con->query($query) === TRUE) {
+
+                $queryC = "INSERT INTO `uploads` (user_id, upload_date, upload_filename) ";
+                $queryD = "VALUES ('$userid', '$date', '$tmpFilename')";
+                $queryE = $queryC.$queryD;
+
+                if($con->query($queryE) === TRUE){
                     echo 'Image Upload Successful!';
-                } else {
+                }else{
                     echo 'Image Upload Unuccessful! => ' .mysqli_error($con);
                 }
             }

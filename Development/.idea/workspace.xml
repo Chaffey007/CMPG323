@@ -16,8 +16,8 @@
           <file leaf-file-name="indexMain.php" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Templates/indexMain.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="302">
-                  <caret line="112" column="105" lean-forward="true" selection-start-line="112" selection-start-column="105" selection-end-line="112" selection-end-column="105" />
+                <state relative-caret-position="251">
+                  <caret line="112" column="105" selection-start-line="112" selection-start-column="105" selection-end-line="112" selection-end-column="105" />
                 </state>
               </provider>
             </entry>
@@ -30,8 +30,8 @@
           <file leaf-file-name="indexControllers.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Components/indexControllers.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="569">
-                  <caret line="401" column="18" selection-start-line="401" selection-start-column="12" selection-end-line="401" selection-end-column="18" />
+                <state relative-caret-position="387">
+                  <caret line="403" column="22" lean-forward="true" selection-start-line="403" selection-start-column="8" selection-end-line="403" selection-end-column="22" />
                   <folding>
                     <element signature="n#!!doc" expanded="true" />
                   </folding>
@@ -42,8 +42,8 @@
           <file leaf-file-name="manageUploads.php" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Services/manageUploads.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="782">
-                  <caret line="53" column="35" selection-start-line="53" selection-start-column="35" selection-end-line="53" selection-end-column="35" />
+                <state relative-caret-position="187">
+                  <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="12" selection-end-column="28" />
                 </state>
               </provider>
             </entry>
@@ -51,8 +51,8 @@
           <file leaf-file-name="uploadImage.php" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Services/uploadImage.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="221">
-                  <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
+                <state relative-caret-position="561">
+                  <caret line="33" column="72" lean-forward="true" selection-start-line="33" selection-start-column="72" selection-end-line="33" selection-end-column="72" />
                 </state>
               </provider>
             </entry>
@@ -65,7 +65,7 @@
             <entry file="file://$PROJECT_DIR$/Services/credentialsGet.php">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="221">
-                  <caret line="13" column="46" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="46" />
+                  <caret line="13" column="47" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="47" />
                 </state>
               </provider>
             </entry>
@@ -79,11 +79,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="indexControllers.js" pinned="false" current-in-tab="false">
+          <file leaf-file-name="indexControllers.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Components/indexControllers.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="302">
-                  <caret line="656" column="78" selection-start-line="656" selection-start-column="72" selection-end-line="656" selection-end-column="78" />
+                <state relative-caret-position="540">
+                  <caret line="662" column="34" selection-start-line="662" selection-start-column="34" selection-end-line="662" selection-end-column="34" />
                   <folding>
                     <element signature="n#!!doc" expanded="true" />
                   </folding>
@@ -91,20 +91,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="indexDirectives.js" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/Components/indexDirectives.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="238">
-                  <caret line="14" column="62" lean-forward="true" selection-start-line="14" selection-start-column="62" selection-end-line="14" selection-end-column="62" />
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file leaf-file-name="manageBanking.php" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Services/manageBanking.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="353">
-                  <caret line="300" selection-start-line="300" selection-end-line="300" />
+                <state relative-caret-position="200">
+                  <caret line="362" column="23" selection-start-line="362" selection-start-column="18" selection-end-line="362" selection-end-column="23" />
                 </state>
               </provider>
             </entry>
@@ -128,11 +119,14 @@
       <find>activShopListItem</find>
       <find>dispUplList</find>
       <find>No shops in list</find>
-      <find>changeEditShopDets</find>
       <find>SaveImgCrop</find>
       <find>demoImgSelect</find>
       <find>editClass</find>
       <find>togShopEditClass</find>
+      <find>changeEditShopDets</find>
+      <find>setSelectedShopItem</find>
+      <find>listSelectedItem</find>
+      <find>count</find>
       <find>newImg</find>
     </findStrings>
     <replaceStrings>
@@ -157,9 +151,9 @@
         <option value="$PROJECT_DIR$/CSS/indexOther.css" />
         <option value="$PROJECT_DIR$/Services/manageUploads.php" />
         <option value="$PROJECT_DIR$/Templates/indexMain.php" />
-        <option value="$PROJECT_DIR$/Components/indexControllers.js" />
-        <option value="$PROJECT_DIR$/Services/uploadImage.php" />
         <option value="$PROJECT_DIR$/Components/indexDirectives.js" />
+        <option value="$PROJECT_DIR$/Services/uploadImage.php" />
+        <option value="$PROJECT_DIR$/Components/indexControllers.js" />
       </list>
     </option>
   </component>
@@ -246,12 +240,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1636495022819</updated>
-      <workItem from="1636495024041" duration="15827000" />
+      <workItem from="1636495024041" duration="18175000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15827000" />
+    <option name="totallyTimeSpent" value="18175000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -356,13 +350,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Services/manageBanking.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="300" selection-start-line="300" selection-end-line="300" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Services/credentialsClear.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
@@ -439,13 +426,6 @@
     <entry file="file://$PROJECT_DIR$/Services/setLogStat.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/Services/credentialsGet.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="46" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CSS/indexOther.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -453,19 +433,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Services/manageUploads.php">
+    <entry file="file://$PROJECT_DIR$/Services/credentialsGet.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="782">
-          <caret line="53" column="35" selection-start-line="53" selection-start-column="35" selection-end-line="53" selection-end-column="35" />
+        <state relative-caret-position="221">
+          <caret line="13" column="47" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="47" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Services/uploadImage.php">
+    <entry file="file://$PROJECT_DIR$/Components/indexDirectives.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
+        <state relative-caret-position="238">
+          <caret line="14" column="62" selection-start-line="14" selection-start-column="62" selection-end-line="14" selection-end-column="62" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Services/manageUploads.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="12" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Components/indexServices.js">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/Templates/indexMain.php">
       <provider selected="true" editor-type-id="text-editor">
@@ -474,23 +464,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Components/indexServices.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Components/indexControllers.js">
+    <entry file="file://$PROJECT_DIR$/Services/manageBanking.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="656" column="78" selection-start-line="656" selection-start-column="72" selection-end-line="656" selection-end-column="78" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state relative-caret-position="200">
+          <caret line="362" column="23" selection-start-line="362" selection-start-column="18" selection-end-line="362" selection-end-column="23" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Components/indexDirectives.js">
+    <entry file="file://$PROJECT_DIR$/Services/uploadImage.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="62" lean-forward="true" selection-start-line="14" selection-start-column="62" selection-end-line="14" selection-end-column="62" />
+        <state relative-caret-position="561">
+          <caret line="33" column="72" lean-forward="true" selection-start-line="33" selection-start-column="72" selection-end-line="33" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Components/indexControllers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="662" column="34" selection-start-line="662" selection-start-column="34" selection-end-line="662" selection-end-column="34" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

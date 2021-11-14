@@ -579,6 +579,8 @@ manageBanking
                 $scope.activShopListItem = $scope.dispUplList[index];
                 $scope.listSelectedItem = 'Upl-' + $scope.activShopListItem.dbId;
                 $scope.dispCurImg = $scope.activShopListItem.dbId;
+            }else{
+                $scope.listSelectedItem = 'Upl-';
             }
         }
 
@@ -657,6 +659,8 @@ manageBanking
                         $scope.dispCurImg = $scope.compImg = $scope.dispNewImg;
                     }
                     CloseImgCrop();
+                    $scope.togShopPopup('add','');
+                    getShopList();
                 }else{
                     alert('Image Uplaod Error.');
                     console.error(response.data);
