@@ -35,7 +35,8 @@ if($action == "get"){
                     'ttl' => $reading['upload_title'],
                     'descr' => $reading['uploadDescript'],
                     'shr' => $reading['upload_is_shared'],
-                    'shrWith' => $reading['upload_shared_with']
+                    'shrWith' => $reading['upload_shared_with'],
+                    'fileName' => $reading['upload_filename']
                 ];
             }
         }
@@ -66,22 +67,22 @@ if($action == "add"){
     }
 }
 
-//................................................................. Delete Shop .................................................................
+//................................................................. Delete Upload .................................................................
 if($action == "delete"){
-    $shopID = mysqli_real_escape_string($con, $_POST['id']);
+    $uplID = mysqli_real_escape_string($con, $_POST['id']);
 
-    $queryRemove = "DELETE FROM `shops` WHERE `shop_id` = '$shopID' ";
+    $queryRemove = "DELETE FROM `uploads` WHERE `upload_id` = '$uplID' ";
     if($con->query($queryRemove) === TRUE){
         $list[] = [
-            'status' => 'Yes - Shop Delete Success for ID: ' .$shopID,
+            'status' => 'Yes - Delete Success for ID: ' .$uplID,
         ];
     }else{
         $list[] = [
-            'status' => 'No - Shop Delete Failed for ID: ' .$shopID. " => " .mysqli_error($con),
+            'status' => 'No - Delete Failed for ID: ' .$uplID. " => " .mysqli_error($con),
         ];
     }
 }
-//................................................................. Edit Shop Data .................................................................
+//................................................................. Edit Upload Data .................................................................
 if($action == 'edit'){
     $data = mysqli_real_escape_string($con, $_POST['data']);
 

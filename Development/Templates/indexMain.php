@@ -63,7 +63,7 @@
 
                             </div>
                             <div class="name">
-                                <font class="nme">{{shop.name}}</font>
+                                <font class="nme">{{shop.ttl}} ({{shop.uplDate}})</font>
                             </div>
                             <div class="controls" layout="row">
                                 <ng-md-icon class="icon edit" icon="edit" size="20" ng-show="item.logo !== 'yes'" ng-click="togShopPopup('edit', $index)"></ng-md-icon>
@@ -89,7 +89,7 @@
                                 <ng-md-icon class="icon" icon="warning" size="30"></ng-md-icon>
                                 <div class="text">
                                     <font class="txt">Are you sure you want to delete </font><br>
-                                    <font class="txtAlt"> {{activShopListItem.name}}</font>
+                                    <font class="txtAlt"> {{activShopListItem.ttl}} ({{activShopListItem.uplDate}})</font>
                                     <font class="txt">?</font>
                                 </div>
                             </div>
@@ -109,11 +109,11 @@
                                         <ng-md-icon icon="image" class="icon" size="100"></ng-md-icon>
                                         <img class="crp" ng-class="{crpNone: dispCurImg === '' || dispCurImg === null}" ng-src="{{dispCurImg}}"/>
                                     </div>
-                                    <div class="edit">
+                                    <div class="edit" ng-show="uplAct=='add'">
                                         <input type="file" class="selImgBtn" demo-img-select="newImg"  />
                                         <ng-md-icon icon="edit" class="editImgIco" size="17"></ng-md-icon>
                                     </div>
-                                    <div class="class" layout="row" ng-click="togShopEditClass()">
+                                    <div class="class" layout="row" ng-show="uplAct=='edit'" ng-click="togShopEditClass()">
                                         <font class="one" ng-class="{two: editClass === 0}">Not Shared</font>
                                         <div class="switch">
                                             <div class="bar" ng-class="{barTwo: editClass === 1}"></div>
@@ -121,32 +121,32 @@
                                         </div>
                                         <font class="one" ng-class="{two: editClass === 1}">Shared</font>
                                     </div>
-                                    <div class="in">
+                                    <div class="in" ng-show="uplAct=='edit'">
                                         <input class="shopNewIn" ng-change="changeEditShopDets('ttl',uplTtl)" ng-model="uplTtl" id="uplTtl" placeholder="Title" type="text" />
                                     </div>
-                                    <div class="in">
+                                    <div class="in" ng-show="uplAct=='edit'">
                                         <input class="shopNewIn" ng-change="changeEditShopDets('descr',uplDesc)" ng-model="uplDesc" id="uplDesc" placeholder="Description" type="text" />
                                     </div>
-                                    <div class="in">
+                                    <div class="in" ng-show="uplAct=='edit'">
                                         <input class="shopNewIn" ng-change="changeEditShopDets('tags',uplTags)" ng-model="uplTags" id="uplTags" placeholder="Tags" type="text" />
                                     </div>
-                                    <div class="in">
+                                    <div class="in" ng-show="uplAct=='edit'">
                                         <input class="shopNewIn" ng-change="changeEditShopDets('geoloc',uplGeo)" ng-model="uplGeo" id="uplGeo" placeholder="Geolocation" type="text" />
                                     </div>
-                                    <div class="in">
+                                    <div class="in" ng-show="uplAct=='edit'">
                                         <input class="shopNewIn" ng-change="changeEditShopDets('capDate',uplCapDate)" ng-model="uplCapDate" id="uplCapDate" placeholder="Capture Date" type="email" />
                                     </div>
-                                    <div class="in">
+                                    <div class="in" ng-show="uplAct=='edit'">
                                         <input class="shopNewIn" ng-change="changeEditShopDets('capBy',uplCapBy)" ng-model="uplCapBy" id="uplCapBy" placeholder="Captured By" type="text" />
                                     </div>
-                                    <div class="in">
+                                    <div class="in" ng-show="uplAct=='edit'">
                                         <input class="shopNewIn" ng-change="changeEditShopDets('shareWith',uplShareWith)" ng-model="uplShareWith" id="uplShareWith" placeholder="Shared With" type="text" />
                                     </div>
 
                                 </div>
                                 <div class="actions" layout="row">
                                     <button class="add" ng-click="togShopPopup('edit', '')">Cancel</button>
-                                    <button class="addDis" ng-class="{add: shopDetsChanged}" ng-click="saveEditShop()">Save</button>
+                                    <button class="addDis" ng-show="uplAct=='edit'" ng-class="{add: shopDetsChanged}" ng-click="saveEditShop()">Save</button>
                                 </div>
                                 <!---------------------------------------------------- Image Crop -------------------------------------------------------------->
                                 <div class="cropDisp" ng-if="showImgCrop">

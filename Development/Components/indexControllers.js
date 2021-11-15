@@ -400,6 +400,7 @@ manageBanking
         /************************************************ Uploads *****************************************************/
         let shopAct = "get";
         var uplAct = 'add';
+        $scope.uplAct = 'add';
         $scope.fullUplList = [];
         getShopList();
         //... Get Upload List from DB ...
@@ -421,7 +422,7 @@ manageBanking
                             for(let a = 0; a < response.data.length; a++){
                                 let tmpImg = null;
                                 if(response.data[a].dbId !== null){
-                                    tmpImg = "Uploads/"+response.data[a].dbId+response.data[a].fileType;
+                                    tmpImg = "Uploads/"+response.data[a].fileName;
                                 }
                                 $scope.fullUplList.push({
                                     listID: a,
@@ -437,7 +438,8 @@ manageBanking
                                     ttl: response.data[a].ttl,
                                     descr: response.data[a].descr,
                                     shr: response.data[a].shr,
-                                    shrWith: response.data[a].shrWith
+                                    shrWith: response.data[a].shrWith,
+                                    fileName: response.data[a].fileName
                                 });
                             }
                             $scope.dispUplList = $scope.fullUplList;
@@ -466,6 +468,7 @@ manageBanking
         $scope.showShopPop = false;
         $scope.togShopPopup = function(popupFunc, index){
             uplAct = popupFunc;
+            $scope.uplAct = popupFunc;
             $scope.showShopPop = !$scope.showShopPop;
             if(popupFunc === "add"){
                 $scope.showImgCrop = false;
