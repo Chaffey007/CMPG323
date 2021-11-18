@@ -16,7 +16,13 @@ $action = $_POST['act'];
 //................................................................. Get Upload Data .................................................................
 if($action == "get"){
     $curUser = $_SESSION['User_Id'];
-    $query = "SELECT * FROM `uploads` WHERE `user_id` = '$curUser'";
+    $curUsername = $_SESSION['User_Username'];
+    $getShared = mysqli_real_escape_string($con, $_POST['share']);
+    if($getShared == '0'){
+        $query = "SELECT * FROM `uploads` WHERE `user_id` = '$curUser'";
+    }else{
+        $query = "SELECT * FROM `uploads` WHERE `upload_is_shared` = 1 AND upload_shared_with LIKE '%$curUsername%'";
+    }
     //....... Get entries by date .........
     $resultGet = $con->query($query);
     if(mysqli_num_rows($resultGet) > 0){
@@ -70,9 +76,11 @@ if($action == "add"){
 //................................................................. Delete Upload .................................................................
 if($action == "delete"){
     $uplID = mysqli_real_escape_string($con, $_POST['id']);
+    $filename = mysqli_real_escape_string($con, $_POST['file']);
 
     $queryRemove = "DELETE FROM `uploads` WHERE `upload_id` = '$uplID' ";
     if($con->query($queryRemove) === TRUE){
+        unlink('../Uploads/'.$filename);
         $list[] = [
             'status' => 'Yes - Delete Success for ID: ' .$uplID,
         ];
@@ -94,15 +102,15 @@ if($action == 'edit'){
     }
 
     //... Update ...
-    $queryUpdateShop = "UPDATE `shops` SET `shop_class` = '$sepSubUnits[1]', `shop_name` = '$sepSubUnits[2]', `shop_branch` = '$sepSubUnits[3]', `shop_tel` = '$sepSubUnits[4]', `shop_address` = '$sepSubUnits[5]', `shop_mail` = '$sepSubUnits[6]', `shop_www` = '$sepSubUnits[7]', `parent_comp` = '$sepSubUnits[8]', `shop_reg_no` = '$sepSubUnits[9]' WHERE `shop_id` = '$sepSubUnits[0]'";
+    $queryUpdateShop = "UPDATE `uploads` SET `upload_is_shared` = '$sepSubUnits[1]', `upload_title` = '$sepSubUnits[2]', `upload_descript` = '$sepSubUnits[3]', `upload_tags` = '$sepSubUnits[4]', `upload_geolocation` = '$sepSubUnits[5]', `upload_capture_date` = '$sepSubUnits[6]', `upload_capture_by` = '$sepSubUnits[7]', `upload_shared_with` = '$sepSubUnits[8]' WHERE `upload_id` = '$sepSubUnits[0]'";
     if($con->query($queryUpdateShop) === TRUE){
         $list[] = [
-            'status' => 'Yes - Shop Updated for '.$data,
+            'status' => 'Yes - Upload Updated for '.$data,
         ];
     }
     else{
         $list[] = [
-            'status' => 'No - Shop Updated for '.$sepSubUnits[2].' failed => ' .mysqli_error($con),
+            'status' => 'No - Upload Updated for '.$sepSubUnits[2].' failed => ' .mysqli_error($con),
         ];
     }
 }

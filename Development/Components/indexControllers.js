@@ -381,10 +381,16 @@ manageBanking
         $rootScope.curPage = 0;
         $rootScope.selectedPage = 0;
         $rootScope.dispCurPageTitle = true;
+        $scope.getShared = '0';
         //... Set Page Transition Variables ...
         $scope.selectDispPage = function(selID){
             $rootScope.loading = true;
-
+            if(selID.includes('Shared')){
+                $scope.getShared = '1';
+            }else{
+                $scope.getShared = '0';
+            }
+            getShopList();
             $timeout(function(){
                 $timeout(function(){
                     $scope.showActivePage = selID;
@@ -392,9 +398,6 @@ manageBanking
                 },200);
             },100);
         };
-
-
-        /************************************************ User Data *****************************************************/
 
 
         /************************************************ Uploads *****************************************************/
@@ -414,11 +417,10 @@ manageBanking
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    data: 'act='+shopAct
+                    data: 'act='+shopAct+'&share='+$scope.getShared
                 }).then(function(response) {
-                        console.log("Get Shop List - " + response.data[0].status);
+                        $scope.fullUplList = [];
                         if(response.data[0].status.includes('Yes')){
-                            $scope.fullUplList = [];
                             for(let a = 0; a < response.data.length; a++){
                                 let tmpImg = null;
                                 if(response.data[a].dbId !== null){
@@ -581,7 +583,7 @@ manageBanking
                 actShopSelIndex = index;
                 $scope.activShopListItem = $scope.dispUplList[index];
                 $scope.listSelectedItem = 'Upl-' + $scope.activShopListItem.dbId;
-                $scope.dispCurImg = $scope.activShopListItem.dbId;
+                $scope.dispCurImg = "Uploads/"+$scope.activShopListItem.fileName;
             }else{
                 $scope.listSelectedItem = 'Upl-';
             }
@@ -597,7 +599,7 @@ manageBanking
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                data: 'act='+action+'&id='+$scope.activShopListItem.dbId
+                data: 'act='+action+'&id='+$scope.activShopListItem.dbId+'&file='+$scope.activShopListItem.fileName
             }).then(function(responseOne){
                     console.log(responseOne.data[0].status);
                     if(responseOne.data[0].status.includes('Yes')){

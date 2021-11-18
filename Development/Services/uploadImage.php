@@ -30,8 +30,8 @@ if(strpos($profile, 'Upl') !== false){
             $result = move_uploaded_file($_FILES['file']['tmp_name'], FILEREPOSITORY.$folder."/".$tmpFilename);
             if ($result == 1){
 
-                $queryC = "INSERT INTO `uploads` (user_id, upload_date, upload_filename) ";
-                $queryD = "VALUES ('$userid', '$date', '$tmpFilename')";
+                $queryC = "INSERT INTO `uploads` (user_id, upload_date, upload_filename, upload_file_type) ";
+                $queryD = "VALUES ('$userid', '$date', '$tmpFilename', '.jpg')";
                 $queryE = $queryC.$queryD;
 
                 if($con->query($queryE) === TRUE){
